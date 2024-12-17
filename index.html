@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Advanced Reorder Point Calculator & Supply Chain Toolkit</title>
+<style>
+/* 
+================================================================================
+CSS STYLES FOR ADVANCED REORDER POINT CALCULATOR
+================================================================================
+
+This stylesheet aims to create a professional and visually appealing interface
+for a supply chain executive. The design incorporates a clean, modern layout,
+with an emphasis on readability, responsiveness, and subtle visual hierarchy.
+
+Key elements:
+- A professional color palette: whites, grays, subtle blues and greens.
+- Responsive grid layout for large screens, tablets, and mobile devices.
+- Clear headings, labels, tooltips, and hover effects for better UX.
+- Print-friendly styling on print media.
+*/
+
+/* Reset and Basic Typography */
+html, body {
+  margin: 0; 
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f9fa;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}
+
+/* Container for main content */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header styles */
+header {
+  background: #36454F;
+  color: #ffffff;
+  padding: 20px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8em;
+}
+
+.navbar {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.navbar a {
+  display: inline-block;
+  margin: 0 10px;
+  color: #ddd;
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #ffffff;
+}
+
+/* Main Layout */
+main {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left column: content */
+.content-section {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.content-section h2 {
+  margin-top: 0;
+}
+
+/* Form styles */
+.form-section {
+  background: #f0f4f8;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.form-section h3 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-actions {
+  margin-top: 20px;
+}
+
+.form-actions button {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background 0.3s ease;
+}
+
+.form-actions button:hover {
+  background: #218838;
+}
+
+/* Result box */
+.result-box {
+  margin-top: 20px;
+  background: #e9f7ef;
+  border: 1px solid #d4edda;
+  padding: 15px;
+  border-radius: 4px;
+  color: #155724;
+  font-weight: 600;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  color: #007bff;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background: #333;
+  color: #fff;
+  text-align: left;
+  padding: 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  font-size: 0.85em;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+}
+
+/* Sidebar (right column) */
+.sidebar {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.sidebar h3 {
+  margin-top: 0;
+}
+
+/* Chart container */
+.chart-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.chart-container canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Additional informational sections */
+.info-box {
+  background: #f8f9fa;
+  border-left: 4px solid #17a2b8;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  font-size: 0.8em;
+  color: #777;
+  padding: 20px;
+  margin-top: 50px;
+}
+
+/* Print styles */
+@media print {
+  header, .navbar, footer {
+    display: none !important;
+  }
+
+  main {
+    grid-template-columns: 1fr !important;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .form-actions, .chart-container {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Advanced Reorder Point & Supply Chain Toolkit</h1>
+  <div class="navbar">
+    <a href="#definition">Definition</a>
+    <a href="#calculator">Calculator</a>
+    <a href="#charts">Chart</a>
+    <a href="#tips">Tips</a>
+    <a href="#print" onclick="window.print()">Print</a>
+  </div>
+</header>
+
+<div class="container">
+  <main>
+    <section class="content-section">
+      <h2 id="definition">What is a Reorder Point?</h2>
+      <p>The <strong>Reorder Point (ROP)</strong> is a critical inventory management metric used in supply chain planning. It determines the level of inventory at which you should trigger a new purchase order to replenish stock before it runs out. A well-calculated reorder point helps maintain smooth operations, avoiding costly stockouts or excessive inventory holding.</p>
+
+      <div class="info-box">
+        <strong>Basic Formula:</strong><br>
+        Reorder Point = (Average Daily Usage × Lead Time) + Safety Stock
+      </div>
+
+      <p><strong>Average Daily Usage:</strong> Estimated units consumed per day.<br>
+      <strong>Lead Time:</strong> The time (in days) it takes from placing an order until it arrives.<br>
+      <strong>Safety Stock:</strong> Extra inventory held to mitigate uncertainties in demand or supply.</p>
+
+      <h2 id="calculator">Reorder Point Calculator</h2>
+      <p>Use the calculator below to determine your reorder point. For more accurate calculations, consider inputting variability in lead times or daily usage for the advanced calculations.</p>
+
+      <div class="form-section">
+        <h3>Input Parameters</h3>
+        <form id="ropForm">
+          <div class="form-group">
+            <label for="dailyUsage">Average Daily Usage (units/day) <span class="tooltip">[?]
+              <span class="tooltip-text">The typical number of units consumed or sold per day.</span></span></label>
+            <input type="number" id="dailyUsage" name="dailyUsage" step="0.01" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="leadTime">Lead Time (days) <span class="tooltip">[?]
+              <span class="tooltip-text">How many days it takes to receive inventory after placing an order.</span></span></label>
+            <input type="number" id="leadTime" name="leadTime" step="0.01" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="safetyStock">Safety Stock (units) <span class="tooltip">[?]
+              <span class="tooltip-text">Extra units held to protect against uncertainties.</span></span></label>
+            <input type="number" id="safetyStock" name="safetyStock" step="0.01" min="0" required />
+          </div>
+
+          <div class="form-group">
+            <label for="demandStdDev">Demand Std. Deviation (units/day, optional) <span class="tooltip">[?]
+              <span class="tooltip-text">If known, the standard deviation of daily demand. Used for advanced calculations.</span></span></label>
+            <input type="number" id="demandStdDev" name="demandStdDev" step="0.01" min="0" placeholder="Optional" />
+          </div>
+          <div class="form-group">
+            <label for="leadTimeStdDev">Lead Time Std. Deviation (days, optional) <span class="tooltip">[?]
+              <span class="tooltip-text">If known, the standard deviation of lead time. Used for advanced calculations.</span></span></label>
+            <input type="number" id="leadTimeStdDev" name="leadTimeStdDev" step="0.01" min="0" placeholder="Optional" />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit">Calculate Reorder Points</button>
+            <button type="button" onclick="resetForm()">Reset</button>
+          </div>
+        </form>
+        <div id="result" class="result-box" style="display:none;"></div>
+      </div>
+
+      <h2 id="charts">Visualizing Your Reorder Point</h2>
+      <p>A simple chart below will visualize your daily usage and lead time relationship. After calculating, it will show a line representing when you need to reorder.</p>
+      <div class="chart-container">
+        <canvas id="reorderChart" width="600" height="300"></canvas>
+      </div>
+
+      <h2 id="tips">Best Practices & Tips</h2>
+      <ul>
+        <li><strong>Review Historical Data:</strong> Continually refine your daily usage and lead time estimates based on historical records.</li>
+        <li><strong>Safety Stock Adjustments:</strong> Periodically reassess your safety stock to align with changing demand patterns or supplier reliability.</li>
+        <li><strong>Use Advanced Models:</strong> Consider advanced forecasting models (e.g., using standard deviation or service level targets) to fine-tune reorder points.</li>
+        <li><strong>Collaborate with Suppliers:</strong> Improved supplier communication can reduce lead time and variability, lowering required safety stock.</li>
+      </ul>
+    </section>
+    <aside class="sidebar">
+      <h3>Additional Tools & Metrics</h3>
+      <p>Beyond reorder points, supply chain executives often track:</p>
+      <ul>
+        <li><strong>Economic Order Quantity (EOQ):</strong> The ideal order quantity that minimizes total holding and ordering costs.</li>
+        <li><strong>Service Level:</strong> The probability of not hitting a stockout during the lead time.</li>
+        <li><strong>Days Inventory Outstanding (DIO):</strong> How many days it takes to convert inventory into sales.</li>
+      </ul>
+      <p>Improving these metrics can lead to leaner operations and improved cash flow.</p>
+    </aside>
+  </main>
+</div>
+
+<footer>
+  <p>&copy; 2024 Supply Chain Excellence Inc. All rights reserved. | <a href="#" onclick="window.print()">Print this page</a></p>
+</footer>
+
+<script>
+/*
+================================================================================
+JAVASCRIPT FOR ADVANCED REORDER POINT CALCULATOR
+================================================================================
+
+Features:
+- Validation and calculation of basic reorder point.
+- Advanced calculation with demand and lead time variability (if provided).
+- Dynamic chart generation using Canvas API.
+- Print-friendly actions.
+- Tooltips and user guidance included.
+
+Formulas:
+- Basic ROP = (Daily Usage * Lead Time) + Safety Stock
+- Advanced ROP with variability (approximation):
+  ROP ≈ (Daily Usage * Lead Time) + Z * sqrt((Lead Time * DemandStdDev²) + (DailyUsage² * LeadTimeStdDev²)) + Safety Stock
+  Where Z is a service factor, for example Z=1.65 for ~95% service level.
+  
+For simplicity, we assume a service level of ~95% (Z=1.65).
+*/
+
+// Global variables for chart
+let reorderChart;
+let chartData = {
+  dailyUsage: 0,
+  leadTime: 0,
+  reorderPoint: 0
+};
+
+// Initialize chart after DOM load
+document.addEventListener('DOMContentLoaded', () => {
+  const ctx = document.getElementById('reorderChart').getContext('2d');
+  reorderChart = new ReorderChart(ctx);
+});
+
+document.getElementById("ropForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  calculateReorderPoint();
+});
+
+function calculateReorderPoint() {
+  const dailyUsage = parseFloat(document.getElementById("dailyUsage").value);
+  const leadTime = parseFloat(document.getElementById("leadTime").value);
+  const safetyStock = parseFloat(document.getElementById("safetyStock").value);
+  const demandStdDev = parseFloat(document.getElementById("demandStdDev").value) || 0;
+  const leadTimeStdDev = parseFloat(document.getElementById("leadTimeStdDev").value) || 0;
+
+  // Basic ROP
+  const basicROP = (dailyUsage * leadTime) + safetyStock;
+
+  // Advanced calculation if std dev values are provided
+  let advancedROP = basicROP;
+  if (demandStdDev > 0 || leadTimeStdDev > 0) {
+    const Z = 1.65; // approx for 95% service level
+    const variabilityTerm = Math.sqrt((leadTime * Math.pow(demandStdDev, 2)) + (Math.pow(dailyUsage, 2) * Math.pow(leadTimeStdDev, 2)));
+    advancedROP = (dailyUsage * leadTime) + (Z * variabilityTerm) + safetyStock;
+  }
+
+  // Suggesting a reorder quantity (a simple heuristic: EOQ approximation)
+  // EOQ often requires annual demand, ordering cost, and holding cost. For simplicity:
+  // Suggest something relative, e.g., dailyUsage * 2 * leadTime as a placeholder suggestion.
+  const suggestedReorderQty = Math.round(dailyUsage * leadTime * 2);
+
+  displayResults(basicROP, advancedROP, suggestedReorderQty);
+
+  // Update chart
+  chartData.dailyUsage = dailyUsage;
+  chartData.leadTime = leadTime;
+  chartData.reorderPoint = advancedROP;
+  reorderChart.updateChart(dailyUsage, leadTime, advancedROP);
+}
+
+function displayResults(basicROP, advancedROP, suggestedReorderQty) {
+  const resultDiv = document.getElementById("result");
+  resultDiv.style.display = "block";
+  let html = "<p><strong>Basic Reorder Point:</strong> " + basicROP.toFixed(2) + " units</p>";
+  if (advancedROP !== basicROP) {
+    html += "<p><strong>Advanced Reorder Point (with variability):</strong> " + advancedROP.toFixed(2) + " units</p>";
+  }
+  html += "<p><strong>Suggested Reorder Quantity (not exact EOQ):</strong> " + suggestedReorderQty + " units</p>";
+  resultDiv.innerHTML = html;
+}
+
+function resetForm() {
+  document.getElementById("ropForm").reset();
+  document.getElementById("result").style.display = "none";
+  reorderChart.clearChart();
+}
+
+// Simple chart class for demonstration (no external libs)
+class ReorderChart {
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.dailyUsage = 0;
+    this.leadTime = 0;
+    this.reorderPoint = 0;
+  }
+
+  updateChart(dailyUsage, leadTime, reorderPoint) {
+    this.dailyUsage = dailyUsage;
+    this.leadTime = leadTime;
+    this.reorderPoint = reorderPoint;
+    this.drawChart();
+  }
+
+  clearChart() {
+    const canvas = this.ctx.canvas;
+    const width = canvas.width;
+    const height = canvas.height;
+    this.ctx.clearRect(0,0,width,height);
+  }
+
+  drawChart() {
+    const canvas = this.ctx.canvas;
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Clear previous
+    this.ctx.clearRect(0,0,width,height);
+
+    // Axis
+    this.ctx.strokeStyle = '#333';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.moveTo(50, height - 50);
+    this.ctx.lineTo(50, 50);
+    this.ctx.moveTo(50, height - 50);
+    this.ctx.lineTo(width - 50, height - 50);
+    this.ctx.stroke();
+
+    // Labels
+    this.ctx.fillStyle = '#333';
+    this.ctx.font = '14px Segoe UI';
+    this.ctx.fillText('Inventory Level (units)', 60, 40);
+    this.ctx.fillText('Time (days)', width - 100, height - 30);
+
+    // Plot the line of daily usage accumulation over lead time:
+    // If you start at reorder point, over leadTime days you consume dailyUsage * leadTime
+    // We'll just illustrate a linear consumption trend.
+
+    const maxInventory = Math.max(this.reorderPoint * 1.2, 10); 
+    const xStart = 50;
+    const yStart = height - 50;
+    const chartWidth = width - 100;
+    const chartHeight = height - 100;
+
+    // Scale factors
+    const xScale = chartWidth / (this.leadTime <= 0 ? 1 : this.leadTime);
+    const yScale = chartHeight / maxInventory;
+
+    // Draw a horizontal line at reorder point
+    const ropY = yStart - (this.reorderPoint * yScale);
+    this.ctx.strokeStyle = 'red';
+    this.ctx.beginPath();
+    this.ctx.moveTo(50, ropY);
+    this.ctx.lineTo(width - 50, ropY);
+    this.ctx.stroke();
+    this.ctx.fillStyle = 'red';
+    this.ctx.fillText('Reorder Point: ' + this.reorderPoint.toFixed(2) + ' units', 55, ropY - 10);
+
+    // Draw usage line from day 0 to leadTime
+    this.ctx.strokeStyle = 'green';
+    this.ctx.beginPath();
+    this.ctx.moveTo(50, yStart);
+    // If lead time is zero, just draw a dot
+    if (this.leadTime > 0) {
+      const finalX = 50 + (this.leadTime * xScale);
+      const finalY = yStart - (this.dailyUsage * this.leadTime * yScale);
+      this.ctx.lineTo(finalX, finalY);
+    } else {
+      // If leadTime is 0, just a small line
+      this.ctx.lineTo(55, yStart - (this.dailyUsage * yScale));
+    }
+    this.ctx.stroke();
+    this.ctx.fillStyle = 'green';
+    this.ctx.fillText('Projected Inventory Depletion', 55, yStart - 5);
+
+  }
+}
+</script>
+</body>
+</html>
